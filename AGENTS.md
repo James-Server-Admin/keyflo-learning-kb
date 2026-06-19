@@ -1,6 +1,6 @@
 # AGENTS.md — Learning KB router (read this first)
 
-**Repo:** `KeyFlo-ai/keyflo-learning-kb`  
+**Repo:** `James-Server-Admin/keyflo-learning-kb` (public interim → `KeyFlo-ai/keyflo-learning-kb`)  
 **Purpose:** Canonical instructions for querying James's **learning corpus** — Pinecone vector index + Neo4j knowledge graph — and for using the **agentic router** that picks which store to hit.
 
 **Access model:** READ ONLY. Never upsert, delete, or mutate Pinecone or Neo4j.
