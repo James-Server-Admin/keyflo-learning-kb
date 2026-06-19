@@ -83,7 +83,7 @@ sudo systemctl status learning-kb-api
 **Pattern:** TLS and WAF at Cloudflare; nginx on the server terminates proxy to localhost API.
 
 1. **DNS** (`keyflo` profile): `kb-api.keyflo.ai` → A record → `192.241.169.31`, proxied orange-cloud OK for WAF.
-2. **nginx** (see `deploy/nginx-kb-api.conf`): reverse proxy to `127.0.0.1:8791`, pass `Authorization` header.
+2. **nginx** (see `deploy/nginx-kb-api.conf`): reverse proxy to `127.0.0.1:8791` on **both port 80 and 443** (Cloudflare Full SSL hits origin :443). Use Cloudflare origin cert `*.keyflo.ai`. Include `listen [::]:443 ssl` so IPv6 origin connections match this vhost.
 3. **Cloudflare:** rate limiting rule on `/v1/query`, bot fight mode optional, restrict countries if needed.
 4. **Do not** bind the API to `0.0.0.0` without nginx + auth — always use bearer tokens.
 
