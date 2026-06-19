@@ -159,6 +159,7 @@ Use **this repo's router** for ad-hoc Q&A; use **kg_ground** for gated pipeline 
 | Env loader (server) | `source /mnt/blockstorage/env/load.sh` |
 | Public HTTP API | `https://kb-api.keyflo.ai/v1/query` (Bearer token from James) · [`docs/public-api.md`](docs/public-api.md) |
 | **MCP (Cursor)** | `https://kb-mcp.waytie.com/mcp` · setup: [`KeyFlo-ai/kb-gateway`](https://github.com/KeyFlo-ai/kb-gateway) → `docs/COLE-SETUP.md` |
+| **Endpoint catalog** | [`KeyFlo-ai/kb-gateway` → `docs/ENDPOINT-CATALOG.md`](https://github.com/KeyFlo-ai/kb-gateway/blob/main/docs/ENDPOINT-CATALOG.md) — all tools, routing, live corpus stats |
 | Upstream implementation | [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) |
 
 ---
