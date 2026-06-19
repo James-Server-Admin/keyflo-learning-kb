@@ -11,7 +11,7 @@
 
 | Step | Action |
 |---|---|
-| 1 | Clone `git@github.com:KeyFlo-ai/keyflo-learning-kb.git` |
+| 1 | Clone `https://github.com/James-Server-Admin/keyflo-learning-kb` (interim; moves to `KeyFlo-ai/keyflo-learning-kb`) |
 | 2 | Share **this file** (`AGENTS.md`) with your coding agent as the primary instruction set |
 | 3 | Run CLIs **on the Keyflo server** (Neo4j bolt is `localhost:7689`, not internet-exposed) |
 | 4 | `pip install -r requirements.txt` |

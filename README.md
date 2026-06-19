@@ -10,11 +10,12 @@
 
 ## Cole / collaborator handoff
 
-1. **Clone this repo** (you need `KeyFlo-ai` org access):
+1. **Clone this repo** (public interim host until moved to `KeyFlo-ai` org):
    ```bash
-   git clone git@github.com:KeyFlo-ai/keyflo-learning-kb.git
+   git clone https://github.com/James-Server-Admin/keyflo-learning-kb.git
    cd keyflo-learning-kb
    ```
+   Target canonical URL: `git@github.com:KeyFlo-ai/keyflo-learning-kb.git` (James runs `scripts/transfer-to-keyflo-org.sh` once).
 2. **Point your agent at** [`AGENTS.md`](AGENTS.md) — routing table, tools, boundaries, checklist.
 3. **Run queries on the Keyflo server** (Neo4j is server-local; not reachable from a laptop):
    ```bash
@@ -44,7 +45,8 @@ The learning corpus (~116 courses, marketing + engineering patterns) lives in **
 Credentials from James (never committed). On the Keyflo server:
 
 ```bash
-git clone git@github.com:KeyFlo-ai/keyflo-learning-kb.git
+git clone git@github.com:KeyFlo-ai/keyflo-learning-kb.git   # after org transfer
+# interim (public): https://github.com/James-Server-Admin/keyflo-learning-kb
 cd keyflo-learning-kb
 pip install -r requirements.txt
 source /mnt/blockstorage/env/load.sh global   # operator env
