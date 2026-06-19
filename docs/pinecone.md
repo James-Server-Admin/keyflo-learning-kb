@@ -25,7 +25,7 @@ See also: [`routing.md`](routing.md) · [`../AGENTS.md`](../AGENTS.md)
 
 James provides both via secure channel. Set as environment variables only.
 
-On server: `source /mnt/blockstorage/env/load.sh global` loads all keys. The CLIs also auto-read `/mnt/blockstorage/env/global.env` when present.
+On server: `source /mnt/blockstorage/env/load.sh` loads all keys. The CLIs also auto-read `/mnt/blockstorage/env/global.env` when present.
 
 **Do not** point `PINECONE_API_KEY` at the legacy global key — it targets a different Pinecone project and returns 404 on index `learning`.
 

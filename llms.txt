@@ -5,8 +5,9 @@
 
 ## Start here
 
-- [AGENTS.md](AGENTS.md): **Primary instructions for LLMs** — routing decision table, tools, env vars, when NOT to use this repo
-- [README.md](README.md): Human-oriented overview for Cole and collaborators
+- [docs/COLE-SETUP.md](docs/COLE-SETUP.md): **Cole handoff** — clone, bearer token, query CLI, troubleshooting
+- [AGENTS.md](AGENTS.md): **Primary instructions for LLMs** — routing decision table, tools, boundaries
+- [README.md](README.md): Human-oriented overview
 
 ## Routing (which database when)
 
@@ -15,11 +16,13 @@
 - [docs/agentic-router.md](docs/agentic-router.md): How to run the router on the Keyflo server
 - [docs/public-api.md](docs/public-api.md): **HTTP API** — bearer auth, Cole without SSH
 
-## HTTP API
+## HTTP API (preferred for Cole)
 
-- [docs/public-api.md](docs/public-api.md): `POST /v1/query`, bearer tokens, systemd/nginx/Cloudflare
-- `api/app.py`: FastAPI gateway wrapping `route_query()`
-- `scripts/run-api.sh`: local operator launcher (127.0.0.1:8791)
+- Base URL: `https://kb-api.keyflo.ai`
+- [docs/public-api.md](docs/public-api.md): `POST /v1/query`, bearer tokens
+- `scripts/query_api.py`: Local CLI — set `LEARNING_KB_API_TOKEN`, no SSH
+- `config/cole.env.example`: Local env template (copy to `config/cole.env`, gitignored)
+- `api/app.py`: FastAPI gateway (server-side)
 
 ## Store access
 
@@ -28,9 +31,15 @@
 
 ## Scripts (read-only CLIs)
 
-- `scripts/query_db.py`: Pinecone semantic search
-- `scripts/query_graph.py`: Neo4j coverage / disputes / lane topics
-- `scripts/route_query.py`: Agentic router launcher (server-only)
+- `scripts/query_api.py`: **HTTP API client** (Cole default — no SSH)
+- `scripts/query_db.py`: Pinecone semantic search (server)
+- `scripts/query_graph.py`: Neo4j coverage / disputes / lane topics (server)
+- `scripts/route_query.py`: Agentic router launcher (server)
+
+## GitHub Actions
+
+- `.github/workflows/smoke-api.yml`: Public `/health` check (no secrets)
+- `.github/workflows/smoke-query.yml`: Server-side query smoke (needs `keyflo-server` runner + secrets)
 
 ## Related (outside this repo)
 

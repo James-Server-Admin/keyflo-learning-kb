@@ -51,7 +51,7 @@ jobs:
           elif [[ -f /mnt/blockstorage/env/global.env ]]; then
             set -a
             # shellcheck disable=SC1091
-            source /mnt/blockstorage/env/load.sh global
+            source /mnt/blockstorage/env/load.sh
             set +a
           else
             echo "error: no LEARNING_KB_COLE_RUNTIME secret and no server load.sh" >&2

@@ -33,7 +33,7 @@ def ensure_learning_pinecone_key() -> None:
     if not learning:
         raise RuntimeError(
             "LEARNING_PINECONE_API_KEY not set — required for index `learning`. "
-            "Ask the operator for read-only keys or run: source /mnt/blockstorage/env/load.sh global"
+            "Ask the operator for read-only keys or run: source /mnt/blockstorage/env/load.sh"
         )
     os.environ["PINECONE_API_KEY"] = learning
 

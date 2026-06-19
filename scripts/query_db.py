@@ -7,7 +7,7 @@ similarity search. Contains NO write operations by construction; pair with a
 read-only Pinecone API key so writes are also impossible server-side.
 
 Usage:
-    source /mnt/blockstorage/env/load.sh global   # server operator env
+    source /mnt/blockstorage/env/load.sh   # server operator env
     # or export LEARNING_PINECONE_API_KEY + OPENAI_API_KEY (read-only keys from James)
     python scripts/query_db.py "your question"
     python scripts/query_db.py --namespace course-transcripts --k 8 "your question"

@@ -1,0 +1,21 @@
+# Public API health check — no secrets; runs on GitHub-hosted runners.
+name: smoke-api
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 14 * * 1-5"  # weekdays 14:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET /health
+        run: |
+          set -euo pipefail
+          body="$(curl -fsS https://kb-api.keyflo.ai/health)"
+          echo "$body"
+          echo "$body" | grep -q '"status":"ok"'

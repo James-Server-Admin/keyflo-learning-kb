@@ -152,6 +152,6 @@ python /path/to/knowledge-base/scripts/query_graph.py --stats
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | `ServiceUnavailable` / connection refused | Container down | Operator: `docker ps \| grep learning-kg-neo4j` → `docker start learning-kg-neo4j` |
-| Missing env var error | Credentials not exported | Load from James or `source /mnt/blockstorage/env/load.sh global` on server |
+| Missing env var error | Credentials not exported | Load from James or `source /mnt/blockstorage/env/load.sh` on server |
 | Empty dispute results | Normal for many topics | Disputes exist on ~6 of 410 topics; use `--disputes` or agentic router for dispute-shaped questions |
 | Topic counts seem stale | Corpus re-ingested without graph rebuild | Operator rebuild via `langchain-course/graph/` pipeline; do not trust coverage until rebuilt |

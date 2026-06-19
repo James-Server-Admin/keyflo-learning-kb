@@ -4,8 +4,8 @@
 
 | Audience | Start here |
 |---|---|
+| **Cole / collaborators** | [`docs/COLE-SETUP.md`](docs/COLE-SETUP.md) |
 | **LLMs / agents** | [`AGENTS.md`](AGENTS.md) |
-| **Humans (Cole, collaborators)** | This README + [`docs/routing.md`](docs/routing.md) |
 | **Discovery index** | [`llms.txt`](llms.txt) |
 
 ## Dual GitHub hosts (both kept)
@@ -22,27 +22,21 @@ Both repos stay in sync. Operator refresh:
 ./scripts/publish-to-keyflo-org.sh                                              # push code to both
 ```
 
-## Cole / collaborator handoff
+## Cole — start here
 
-1. **Clone** (pick host):
-   ```bash
-   # KeyFlo org member:
-   git clone git@github.com:KeyFlo-ai/knowledge-base.git
-   # Outside KeyFlo org:
-   git clone https://github.com/James-Server-Admin/keyflo-learning-kb.git
-   cd knowledge-base   # or keyflo-learning-kb — same content
-   ```
-2. **Point your agent at** [`AGENTS.md`](AGENTS.md) — routing table, tools, boundaries, checklist.
-3. **GitHub runtime:** Settings → Actions → **Variables** (`COLE_SETUP`, server host, paths) and **Secrets** (`LEARNING_KB_COLE_RUNTIME` + individual keys). Run **smoke-query** workflow when the self-hosted runner is registered.
-4. **Run queries on the Keyflo server** (Neo4j is server-local):
-   ```bash
-   ssh root@192.241.169.31
-   git clone git@github.com:KeyFlo-ai/knowledge-base.git && cd knowledge-base
-   pip install -r requirements.txt
-   source /mnt/blockstorage/env/load.sh   # or read-only keys from James
-   python scripts/route_query.py "which courses cover copywriting?"
-   ```
-5. **Router runtime** also needs [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) at `/root/langchain-course` on the server.
+Full handoff: **[`docs/COLE-SETUP.md`](docs/COLE-SETUP.md)** (clone, bearer token, query CLI, optional SSH/Actions).
+
+**Fast path (no SSH):**
+
+```bash
+git clone git@github.com:KeyFlo-ai/knowledge-base.git && cd knowledge-base
+cp config/cole.env.example config/cole.env   # add LEARNING_KB_API_TOKEN from James
+source config/cole.env
+curl -s https://kb-api.keyflo.ai/health
+python scripts/query_api.py "which courses cover copywriting?"
+```
+
+Give your coding agent [`AGENTS.md`](AGENTS.md). HTTP API reference: [`docs/public-api.md`](docs/public-api.md).
 
 ## What's in this repo
 
@@ -53,15 +47,15 @@ The learning corpus (~116 courses, marketing + engineering patterns) lives in **
 | **Vector** | Pinecone index `learning` | Semantic search, how-to passages |
 | **Graph** | Neo4j `learning-kg-neo4j` | Coverage, topic depth, cross-course disputes |
 
-**Agentic router** — when you're not sure which to use, `scripts/route_query.py` classifies the question and retrieves from the right store(s). Source: [`router/agentic_router.py`](router/agentic_router.py).
+**Agentic router** — when you're not sure which to use, the HTTP API or `scripts/route_query.py` classifies the question and retrieves from the right store(s). Source: [`router/agentic_router.py`](router/agentic_router.py).
 
-## Quick start (server)
+## Quick start (server SSH — optional)
 
 ```bash
 git clone git@github.com:KeyFlo-ai/knowledge-base.git
 cd knowledge-base
 pip install -r requirements.txt
-source /mnt/blockstorage/env/load.sh global
+source /mnt/blockstorage/env/load.sh
 
 python scripts/route_query.py "how do I structure a Meta lead gen campaign?"
 python scripts/query_db.py --namespace course-transcripts "PAS headline formulas"
@@ -73,28 +67,25 @@ python scripts/query_graph.py --disputes
 
 | Doc | Topic |
 |---|---|
+| [`docs/COLE-SETUP.md`](docs/COLE-SETUP.md) | **Cole handoff** — token, CLI, GitHub secrets |
 | [`docs/routing.md`](docs/routing.md) | **Which database when** |
+| [`docs/public-api.md`](docs/public-api.md) | **HTTP API** (no SSH) |
 | [`docs/pinecone.md`](docs/pinecone.md) | Pinecone access |
 | [`docs/neo4j.md`](docs/neo4j.md) | Neo4j access |
 | [`docs/agentic-router.md`](docs/agentic-router.md) | Router agent |
-| [`docs/public-api.md`](docs/public-api.md) | **HTTP API** (Cole without SSH) |
 
-## Public HTTP API (no SSH)
+## Public HTTP API
 
-Bearer-authenticated read-only gateway on the Keyflo server:
+| Endpoint | Auth |
+|----------|------|
+| `GET https://kb-api.keyflo.ai/health` | none |
+| `POST https://kb-api.keyflo.ai/v1/query` | Bearer token from James |
 
 ```bash
-# Server operator
-./scripts/run-api.sh   # 127.0.0.1:8791
-
-# Cole (after James sends a token)
-curl -s https://kb-api.keyflo.ai/v1/query \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"question":"which courses cover copywriting?"}'
+python scripts/query_api.py "which courses cover copywriting?"
 ```
 
-See [`docs/public-api.md`](docs/public-api.md) for systemd, nginx, and Cloudflare setup.
+Operator deploy: [`docs/public-api.md`](docs/public-api.md) · `deploy/` · `scripts/run-api.sh`
 
 ## Related repos
 
@@ -106,8 +97,6 @@ See [`docs/public-api.md`](docs/public-api.md) for systemd, nginx, and Cloudflar
 **READ ONLY.** Query and cite; never write to Pinecone or Neo4j from this repo.
 
 ## Operator: publish / refresh GitHub secrets
-
-Canonical sync (operator gh auth on `KeyFlo-ai/knowledge-base`):
 
 ```bash
 /mnt/blockstorage/private/credentials/scripts/sync-knowledge-base-gh-secrets.sh

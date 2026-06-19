@@ -11,15 +11,28 @@
 
 | Step | Action |
 |---|---|
-| 1 | Clone `KeyFlo-ai/knowledge-base` (org) **or** `James-Server-Admin/keyflo-learning-kb` (external) |
-| 2 | Share **this file** (`AGENTS.md`) with your coding agent as the primary instruction set |
-| 3 | Run CLIs **on the Keyflo server** (Neo4j bolt is `localhost:7689`, not internet-exposed) |
-| 4 | `pip install -r requirements.txt` |
-| 5 | Env: `source /mnt/blockstorage/env/load.sh` **or** export read-only keys from James (`LEARNING_PINECONE_API_KEY`, `LEARNING_KG_NEO4J_*`, `OPENAI_API_KEY`) |
-| 6 | Router: requires `okrealai/langchain-course` at `/root/langchain-course` (set `LANGCHAIN_COURSE_REPO` if elsewhere) |
-| 7 | **No SSH:** use HTTP API — James sends bearer token → `POST https://kb-api.keyflo.ai/v1/query` ([`docs/public-api.md`](docs/public-api.md)) |
+| 1 | Read [`docs/COLE-SETUP.md`](docs/COLE-SETUP.md) — full handoff |
+| 2 | Clone `KeyFlo-ai/knowledge-base` |
+| 3 | Get bearer token from James → `config/cole.env` → `python scripts/query_api.py "question"` |
+| 4 | Share **this file** (`AGENTS.md`) with your coding agent |
+| 5 | *(Optional)* SSH to server for direct CLIs — Neo4j is `localhost:7689` only |
+| 6 | *(Optional)* GitHub Actions **smoke-query** when self-hosted runner exists |
 
-Scripts auto-load `/mnt/blockstorage/env/global.env` when present. Pinecone CLIs **require** `LEARNING_PINECONE_API_KEY` (not the legacy global `PINECONE_API_KEY`).
+Scripts auto-load `/mnt/blockstorage/env/global.env` when present on the server. Pinecone CLIs **require** `LEARNING_PINECONE_API_KEY` (not the legacy global `PINECONE_API_KEY`).
+
+---
+
+## HTTP API (preferred — no SSH)
+
+When the user has a bearer token (`LEARNING_KB_API_TOKEN`):
+
+```bash
+python scripts/query_api.py "which courses cover copywriting?"
+```
+
+Or call `POST https://kb-api.keyflo.ai/v1/query` with `Authorization: Bearer …`. See [`docs/public-api.md`](docs/public-api.md).
+
+**Agents:** Prefer the HTTP API for corpus Q&A unless the task requires raw Cypher or Pinecone namespace control — then use SSH CLIs.
 
 ---
 
@@ -151,7 +164,7 @@ Credentials and setup live in **this repo’s GitHub Settings → Secrets and va
 
 | Name | Type | Purpose |
 |---|---|---|
-| `COLE_SETUP` | **Variable** (readable in Settings) | Full checklist: SSH, Neo4j, router path, smoke commands |
+| `COLE_SETUP` | **Variable** | Points to [`docs/COLE-SETUP.md`](docs/COLE-SETUP.md) |
 | `KEYFLO_SERVER_HOST` | Variable | `192.241.169.31` |
 | `KEYFLO_SERVER_SSH_USER` | Variable | `root` |
 | `LEARNING_KG_NEO4J_URI` | Variable | `bolt://localhost:7689` |
@@ -190,7 +203,9 @@ Before querying:
 
 | File | Contents |
 |---|---|
+| [`docs/COLE-SETUP.md`](docs/COLE-SETUP.md) | Cole handoff — token, CLI, paths |
 | [`docs/routing.md`](docs/routing.md) | Full routing table + GraphRAG pattern |
+| [`docs/public-api.md`](docs/public-api.md) | HTTP API reference |
 | [`docs/pinecone.md`](docs/pinecone.md) | Vector index access |
 | [`docs/neo4j.md`](docs/neo4j.md) | Graph access + Cypher examples |
 | [`docs/agentic-router.md`](docs/agentic-router.md) | Router architecture + API |

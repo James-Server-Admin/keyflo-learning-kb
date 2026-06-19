@@ -63,7 +63,7 @@ curl -s https://kb-api.keyflo.ai/v1/query \
 
 ```bash
 cd /mnt/blockstorage/business/Keyflo_AI/08_Development/knowledge-base
-source /mnt/blockstorage/env/load.sh global
+source /mnt/blockstorage/env/load.sh
 ./scripts/run-api.sh
 # listens 127.0.0.1:8791 by default
 curl -s http://127.0.0.1:8791/health
@@ -110,5 +110,10 @@ sudo systemctl restart learning-kb-api
 ## Cole handoff (no SSH)
 
 1. James sends a bearer token securely.
-2. Cole calls `https://kb-api.keyflo.ai/v1/query` from any machine.
-3. For bulk CLI work or graph debugging, SSH to the server remains optional.
+2. Cole copies `config/cole.env.example` → `config/cole.env`, sets `LEARNING_KB_API_TOKEN`.
+3. Run queries: `python scripts/query_api.py "your question"` or curl below.
+4. Full checklist: [`docs/COLE-SETUP.md`](COLE-SETUP.md)
+
+```bash
+python scripts/query_api.py "which courses cover copywriting?"
+```

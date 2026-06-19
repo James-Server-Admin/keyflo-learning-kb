@@ -5,7 +5,7 @@ Delegates to langchain-course runtime where full deps (LangGraph, Pinecone,
 Neo4j, rigorous_benchmark, etc.) are installed.
 
 Usage:
-    source /mnt/blockstorage/env/load.sh global
+    source /mnt/blockstorage/env/load.sh
     python scripts/route_query.py "your question"
     python scripts/route_query.py --k 8 "your question"
 
