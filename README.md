@@ -70,10 +70,14 @@ python scripts/query_graph.py --disputes
 
 **READ ONLY.** Query and cite; never write to Pinecone or Neo4j from this repo.
 
-## Operator: first publish to KeyFlo-ai
+## Operator: publish / refresh GitHub secrets
 
-If the GitHub repo does not exist yet, run once as a KeyFlo-ai org admin:
+Canonical sync (operator gh auth on `KeyFlo-ai/knowledge-base`):
 
 ```bash
-./scripts/publish-to-keyflo-org.sh
+/mnt/blockstorage/private/credentials/scripts/sync-knowledge-base-gh-secrets.sh
+# or from this repo:
+./scripts/publish-to-keyflo-org.sh --secrets-only
 ```
+
+First-time repo + push: `./scripts/publish-to-keyflo-org.sh`
