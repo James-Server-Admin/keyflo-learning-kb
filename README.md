@@ -8,12 +8,29 @@
 | **Humans (Cole, collaborators)** | This README + [`docs/routing.md`](docs/routing.md) |
 | **Discovery index** | [`llms.txt`](llms.txt) |
 
+## Dual GitHub hosts (both kept)
+
+| Host | Repo | Use when |
+|---|---|---|
+| **KeyFlo org** | `KeyFlo-ai/knowledge-base` | Cole / Keyflo collaborators with org access |
+| **External mirror** | `James-Server-Admin/keyflo-learning-kb` | Access from outside KeyFlo org (public clone, no org membership) |
+
+Both repos stay in sync. Operator refresh:
+
+```bash
+/mnt/blockstorage/private/credentials/scripts/sync-knowledge-base-gh-secrets.sh   # secrets on both
+./scripts/publish-to-keyflo-org.sh                                              # push code to both
+```
+
 ## Cole / collaborator handoff
 
-1. **Clone** (after James publishes to KeyFlo-ai — one-time operator step):
+1. **Clone** (pick host):
    ```bash
+   # KeyFlo org member:
    git clone git@github.com:KeyFlo-ai/knowledge-base.git
-   cd knowledge-base
+   # Outside KeyFlo org:
+   git clone https://github.com/James-Server-Admin/keyflo-learning-kb.git
+   cd knowledge-base   # or keyflo-learning-kb — same content
    ```
 2. **Point your agent at** [`AGENTS.md`](AGENTS.md) — routing table, tools, boundaries, checklist.
 3. **GitHub runtime:** Settings → Actions → **Variables** (`COLE_SETUP`, server host, paths) and **Secrets** (`LEARNING_KB_COLE_RUNTIME` + individual keys). Run **smoke-query** workflow when the self-hosted runner is registered.

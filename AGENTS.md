@@ -1,6 +1,6 @@
 # AGENTS.md — Learning KB router (read this first)
 
-**Repo:** `KeyFlo-ai/knowledge-base`  
+**Repo:** `KeyFlo-ai/knowledge-base` (org canonical) · mirror: `James-Server-Admin/keyflo-learning-kb` (external access)  
 **Purpose:** Canonical instructions for querying James's **learning corpus** — Pinecone vector index + Neo4j knowledge graph — and for using the **agentic router** that picks which store to hit.
 
 **Access model:** READ ONLY. Never upsert, delete, or mutate Pinecone or Neo4j.
@@ -11,7 +11,7 @@
 
 | Step | Action |
 |---|---|
-| 1 | Clone `git@github.com:KeyFlo-ai/knowledge-base.git` |
+| 1 | Clone `KeyFlo-ai/knowledge-base` (org) **or** `James-Server-Admin/keyflo-learning-kb` (external) |
 | 2 | Share **this file** (`AGENTS.md`) with your coding agent as the primary instruction set |
 | 3 | Run CLIs **on the Keyflo server** (Neo4j bolt is `localhost:7689`, not internet-exposed) |
 | 4 | `pip install -r requirements.txt` |

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Publish or refresh KeyFlo-ai/knowledge-base GitHub repo + Cole runtime secrets.
-# Requires: gh auth as KeyFlo-ai org admin (James / okrealai), not agent-smithj.
+# Publish or refresh knowledge-base on GitHub (dual-hosted) + Cole runtime secrets.
+# Requires: gh auth as admin on KeyFlo-ai and James-Server-Admin repos.
 set -euo pipefail
 
-REPO="KeyFlo-ai/knowledge-base"
-INTERIM="James-Server-Admin/keyflo-learning-kb"
+ORG_REPO="KeyFlo-ai/knowledge-base"
+EXTERNAL_REPO="James-Server-Admin/keyflo-learning-kb"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SYNC_GH="/mnt/blockstorage/private/credentials/scripts/sync-knowledge-base-gh-secrets.sh"
 MODE="${1:-all}"
@@ -19,26 +19,39 @@ sync_secrets() {
   "$SYNC_GH"
 }
 
+push_both() {
+  git remote set-url origin "git@github.com:${ORG_REPO}.git"
+  git push -u origin main
+  if git remote get-url external &>/dev/null; then
+    git push external main
+  else
+    git remote add external "git@github.com:${EXTERNAL_REPO}.git"
+    git push -u external main
+  fi
+  echo "==> Pushed to ${ORG_REPO} and ${EXTERNAL_REPO}"
+}
+
 case "$MODE" in
   --secrets-only|secrets-only)
     sync_secrets
     ;;
   all|"")
-    if gh repo view "$REPO" &>/dev/null; then
-      echo "==> Repo exists; pushing main..."
-      git remote set-url origin "git@github.com:${REPO}.git"
-      git push -u origin main
+    if gh repo view "$ORG_REPO" &>/dev/null; then
+      echo "==> Org repo exists; pushing main to both remotes..."
+      push_both
     else
-      echo "==> Creating ${REPO} (private) and pushing main..."
-      gh repo create "$REPO" --private \
+      echo "==> Creating ${ORG_REPO} (private)..."
+      gh repo create "$ORG_REPO" --private \
         --description "Learning corpus access (Pinecone + Neo4j) and agentic router docs" \
         --source=. --remote=origin --push
+      if gh repo view "$EXTERNAL_REPO" &>/dev/null; then
+        git remote add external "git@github.com:${EXTERNAL_REPO}.git" 2>/dev/null || true
+        git push external main || echo "warn: external push failed (add remote manually)"
+      fi
     fi
     sync_secrets
-    echo "==> Done. Canonical remote: git@github.com:${REPO}.git"
-    if gh repo view "$INTERIM" &>/dev/null; then
-      echo "==> Optional: delete interim repo: gh repo delete ${INTERIM} --yes"
-    fi
+    echo "==> Done. Org: git@github.com:${ORG_REPO}.git"
+    echo "==> External mirror: git@github.com:${EXTERNAL_REPO}.git (keep for outside-KeyFlo access)"
     ;;
   *)
     echo "Usage: $0 [all|--secrets-only]" >&2

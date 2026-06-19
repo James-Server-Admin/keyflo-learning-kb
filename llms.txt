@@ -1,7 +1,7 @@
 # Keyflo Learning KB — agent discovery index
 
 > Canonical repo for querying the learning corpus (Pinecone + Neo4j) and the agentic router that picks which store to use.
-> **Repo:** `KeyFlo-ai/knowledge-base` on GitHub · local path: `Keyflo_AI/08_Development/knowledge-base/`
+> **Repos:** `KeyFlo-ai/knowledge-base` (org) · `James-Server-Admin/keyflo-learning-kb` (external mirror)
 
 ## Start here
 
