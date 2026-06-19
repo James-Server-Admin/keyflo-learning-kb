@@ -68,7 +68,7 @@ One corpus, **two stores**. Pick based on question shape:
 |---|---|---|
 | "How do I X?" / "Explain X" / semantic how-to | **vector** | `scripts/query_db.py --namespace course-transcripts` |
 | Process / engineering patterns | **vector** | `scripts/query_db.py --namespace patterns` |
-| "Which courses cover X?" | **graph** | `scripts/query_graph.py --topics "X"` |
+| "Which courses cover X?" | **graph** | `scripts/query_graph.py --topics "X"` (searches topic + narrow + discipline + lecture title) |
 | Coverage / gaps / topic depth | **graph** | `scripts/query_graph.py --lane copy\|design\|campaign\|tracking` |
 | "Do courses **disagree** about X?" | **graph** | `scripts/query_graph.py --disputes` or `scripts/route_query.py` |
 | Broad synthesis (passages + structure) | **both** | `scripts/route_query.py "question"` |
@@ -158,6 +158,7 @@ Use **this repo's router** for ad-hoc Q&A; use **kg_ground** for gated pipeline 
 | Router runtime deps | `/root/langchain-course` (or `LANGCHAIN_COURSE_REPO`) |
 | Env loader (server) | `source /mnt/blockstorage/env/load.sh` |
 | Public HTTP API | `https://kb-api.keyflo.ai/v1/query` (Bearer token from James) · [`docs/public-api.md`](docs/public-api.md) |
+| **MCP (Cursor)** | `https://kb-mcp.waytie.com/mcp` · setup: [`KeyFlo-ai/kb-gateway`](https://github.com/KeyFlo-ai/kb-gateway) → `docs/COLE-SETUP.md` |
 | Upstream implementation | [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) |
 
 ---
@@ -169,6 +170,9 @@ Credentials and setup live in **this repo’s GitHub Settings → Secrets and va
 | Name | Type | Purpose |
 |---|---|---|
 | `COLE_SETUP` | **Variable** | Points to [`docs/COLE-SETUP.md`](docs/COLE-SETUP.md) |
+| `KB_GATEWAY_MCP_URL` | **Variable** | MCP endpoint (`https://kb-mcp.waytie.com/mcp`) |
+| `KB_GATEWAY_MCP_TOKEN` | **Variable** | Bearer token for MCP (same as HTTP API) |
+| `KB_GATEWAY_REPO` | **Variable** | `KeyFlo-ai/kb-gateway` — run `./scripts/setup-mcp.sh` there |
 | `KEYFLO_SERVER_HOST` | Variable | `192.241.169.31` |
 | `KEYFLO_SERVER_SSH_USER` | Variable | `root` |
 | `LEARNING_KG_NEO4J_URI` | Variable | `bolt://localhost:7689` |

@@ -3,11 +3,33 @@
 **Repo:** `KeyFlo-ai/knowledge-base` (you are here)  
 **Purpose:** Query James's personal learning corpus (~116 marketing/engineering courses) via Pinecone + Neo4j, with an agentic router that picks the right store.
 
-Everything Cole needs to **use** the corpus is in this repo. The bearer token is stored as a **GitHub repo variable** (`LEARNING_KB_API_TOKEN`) — run `./scripts/setup-cole-env.sh` after `gh auth login`.
+---
+
+## MCP in Cursor (recommended)
+
+Use the learning KB as an MCP server in Cursor — no SSH, same corpus:
+
+| Item | Value |
+|------|-------|
+| **Setup repo** | [`KeyFlo-ai/kb-gateway`](https://github.com/KeyFlo-ai/kb-gateway) |
+| **MCP URL** | `https://kb-mcp.waytie.com/mcp` |
+| **GitHub variable** | `COLE_SETUP` on `KeyFlo-ai/kb-gateway` → [`docs/COLE-SETUP.md`](https://github.com/KeyFlo-ai/kb-gateway/blob/main/docs/COLE-SETUP.md) |
+
+```bash
+git clone git@github.com:KeyFlo-ai/kb-gateway.git
+cd kb-gateway
+gh auth login
+./scripts/setup-mcp.sh
+# paste config/mcp.json → Cursor Settings → MCP
+```
+
+Tools: `route_query`, `query_namespace`, `graph_query`, `list_namespaces`, `health`.
 
 ---
 
-## Quick start (recommended — no SSH)
+## Quick start — HTTP API (scripts / no MCP)
+
+Everything below is the **HTTP API** path. Bearer token: GitHub variable `LEARNING_KB_API_TOKEN` on this repo — run `./scripts/setup-cole-env.sh` after `gh auth login`.
 
 1. **Clone this repo**
    ```bash
@@ -121,7 +143,10 @@ Secrets and variables are pre-synced by James — see table below.
 
 | Name | Type | Purpose |
 |------|------|---------|
-| `COLE_SETUP` | Variable | Pointer to this file |
+| `COLE_SETUP` | Variable | Pointer to this file (HTTP API); MCP → `KeyFlo-ai/kb-gateway` |
+| `KB_GATEWAY_MCP_URL` | Variable | `https://kb-mcp.waytie.com/mcp` |
+| `KB_GATEWAY_MCP_TOKEN` | Variable | Same bearer as `LEARNING_KB_API_TOKEN` — for MCP |
+| `KB_GATEWAY_REPO` | Variable | `KeyFlo-ai/kb-gateway` — clone for `./scripts/setup-mcp.sh` |
 | `KEYFLO_SERVER_HOST` | Variable | `192.241.169.31` |
 | `KEYFLO_SERVER_SSH_USER` | Variable | `root` |
 | `LEARNING_KG_NEO4J_URI` | Variable | `bolt://localhost:7689` |
