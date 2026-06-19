@@ -1,7 +1,7 @@
 # Which database to query — routing guide
 
 **Audience:** Cole, agents, and pipeline authors.  
-**Canonical repo:** `KeyFlo-ai/keyflo-learning-kb` (this documentation).  
+**Canonical repo:** `KeyFlo-ai/knowledge-base` (this documentation).  
 **Router implementation:** [`router/agentic_router.py`](../router/agentic_router.py) (reference) · runtime in [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course).  
 **Marketing pipeline GraphRAG:** `kg_ground()` in [`KeyFlo-ai/keyflo-marketing`](https://github.com/KeyFlo-ai/keyflo-marketing) · `pipeline/lib/kg_research.py`.
 

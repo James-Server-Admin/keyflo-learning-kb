@@ -1,6 +1,6 @@
-# keyflo-learning-kb
+# knowledge-base
 
-**Canonical Keyflo org repo** for querying the learning corpus and routing between Pinecone and Neo4j.
+**Canonical Keyflo org repo** (`KeyFlo-ai/knowledge-base`) for querying the learning corpus and routing between Pinecone and Neo4j.
 
 | Audience | Start here |
 |---|---|
@@ -10,26 +10,22 @@
 
 ## Cole / collaborator handoff
 
-1. **Clone this repo** (public interim host until moved to `KeyFlo-ai` org):
+1. **Clone** (after James publishes to KeyFlo-ai — one-time operator step):
    ```bash
-   git clone https://github.com/James-Server-Admin/keyflo-learning-kb.git
-   cd keyflo-learning-kb
+   git clone git@github.com:KeyFlo-ai/knowledge-base.git
+   cd knowledge-base
    ```
-   Target canonical URL: `git@github.com:KeyFlo-ai/keyflo-learning-kb.git` (James runs `scripts/transfer-to-keyflo-org.sh` once).
 2. **Point your agent at** [`AGENTS.md`](AGENTS.md) — routing table, tools, boundaries, checklist.
-3. **Run queries on the Keyflo server** (Neo4j is server-local; not reachable from a laptop):
+3. **GitHub runtime:** Settings → Actions → **Variables** (`COLE_SETUP`, server host, paths) and **Secrets** (`LEARNING_KB_COLE_RUNTIME` + individual keys). Run **smoke-query** workflow when the self-hosted runner is registered.
+4. **Run queries on the Keyflo server** (Neo4j is server-local):
    ```bash
-   ssh <keyflo-server>
-   git clone git@github.com:KeyFlo-ai/keyflo-learning-kb.git
-   cd keyflo-learning-kb
+   ssh root@192.241.169.31
+   git clone git@github.com:KeyFlo-ai/knowledge-base.git && cd knowledge-base
    pip install -r requirements.txt
-   source /mnt/blockstorage/env/load.sh global   # or use read-only keys James sends you
+   source /mnt/blockstorage/env/load.sh global   # or read-only keys from James
+   python scripts/route_query.py "which courses cover copywriting?"
    ```
-4. **Router runtime** also needs [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) at `/root/langchain-course` on the server (already installed for operators).
-
-Ask James for read-only `LEARNING_PINECONE_API_KEY`, `LEARNING_KG_NEO4J_*`, and `OPENAI_API_KEY` if you are not using the server env loader.
-
-**GitHub:** Repo Settings → Actions → **Variables** (`COLE_SETUP`, server host, paths) and **Secrets** (`LEARNING_KB_COLE_RUNTIME` bundle + individual keys). Run **smoke-query** workflow when the self-hosted runner is registered.
+5. **Router runtime** also needs [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) at `/root/langchain-course` on the server.
 
 ## What's in this repo
 
@@ -44,22 +40,14 @@ The learning corpus (~116 courses, marketing + engineering patterns) lives in **
 
 ## Quick start (server)
 
-Credentials from James (never committed). On the Keyflo server:
-
 ```bash
-git clone git@github.com:KeyFlo-ai/keyflo-learning-kb.git   # after org transfer
-# interim (public): https://github.com/James-Server-Admin/keyflo-learning-kb
-cd keyflo-learning-kb
+git clone git@github.com:KeyFlo-ai/knowledge-base.git
+cd knowledge-base
 pip install -r requirements.txt
-source /mnt/blockstorage/env/load.sh global   # operator env
+source /mnt/blockstorage/env/load.sh global
 
-# Not sure which DB → use the router
 python scripts/route_query.py "how do I structure a Meta lead gen campaign?"
-
-# Know you need vectors
 python scripts/query_db.py --namespace course-transcripts "PAS headline formulas"
-
-# Know you need graph structure
 python scripts/query_graph.py --lane copy
 python scripts/query_graph.py --disputes
 ```
@@ -81,3 +69,11 @@ python scripts/query_graph.py --disputes
 ## Access model
 
 **READ ONLY.** Query and cite; never write to Pinecone or Neo4j from this repo.
+
+## Operator: first publish to KeyFlo-ai
+
+If the GitHub repo does not exist yet, run once as a KeyFlo-ai org admin:
+
+```bash
+./scripts/publish-to-keyflo-org.sh
+```

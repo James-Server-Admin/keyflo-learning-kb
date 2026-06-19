@@ -36,7 +36,7 @@ The router needs **server access** — Neo4j (7689), Pinecone, OpenAI, and LangS
 ### This repo (Keyflo server)
 
 ```bash
-cd keyflo-learning-kb
+cd knowledge-base
 source /mnt/blockstorage/env/load.sh global
 python scripts/route_query.py "do any courses disagree about how to open a negotiation?"
 python scripts/route_query.py --k 8 "how do I structure a Meta lead gen campaign?"

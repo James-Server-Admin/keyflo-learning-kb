@@ -133,7 +133,7 @@ Verify connectivity on server:
 
 ```bash
 cd /root/langchain-course && ./run runtime/agentic_router.py --help 2>/dev/null || true
-python /path/to/keyflo-learning-kb/scripts/query_graph.py --stats
+python /path/to/knowledge-base/scripts/query_graph.py --stats
 ```
 
 ---

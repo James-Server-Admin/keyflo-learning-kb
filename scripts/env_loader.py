@@ -1,4 +1,4 @@
-"""Operator env helpers for keyflo-learning-kb CLIs.
+"""Operator env helpers for KeyFlo-ai/knowledge-base CLIs.
 
 Maps project-scoped LEARNING_* keys to SDK-expected names. Refuses the legacy
 global PINECONE_API_KEY when LEARNING_PINECONE_API_KEY is absent — that key

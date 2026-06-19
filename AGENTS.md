@@ -1,6 +1,6 @@
 # AGENTS.md — Learning KB router (read this first)
 
-**Repo:** `James-Server-Admin/keyflo-learning-kb` (public interim → `KeyFlo-ai/keyflo-learning-kb`)  
+**Repo:** `KeyFlo-ai/knowledge-base`  
 **Purpose:** Canonical instructions for querying James's **learning corpus** — Pinecone vector index + Neo4j knowledge graph — and for using the **agentic router** that picks which store to hit.
 
 **Access model:** READ ONLY. Never upsert, delete, or mutate Pinecone or Neo4j.
@@ -11,7 +11,7 @@
 
 | Step | Action |
 |---|---|
-| 1 | Clone `https://github.com/James-Server-Admin/keyflo-learning-kb` (interim; moves to `KeyFlo-ai/keyflo-learning-kb`) |
+| 1 | Clone `git@github.com:KeyFlo-ai/knowledge-base.git` |
 | 2 | Share **this file** (`AGENTS.md`) with your coding agent as the primary instruction set |
 | 3 | Run CLIs **on the Keyflo server** (Neo4j bolt is `localhost:7689`, not internet-exposed) |
 | 4 | `pip install -r requirements.txt` |
@@ -166,7 +166,7 @@ Requires a **self-hosted runner** labeled `keyflo-server` on this repo (same mac
 
 ```bash
 ssh root@192.241.169.31
-git clone https://github.com/James-Server-Admin/keyflo-learning-kb.git && cd keyflo-learning-kb
+git clone git@github.com:KeyFlo-ai/knowledge-base.git && cd knowledge-base
 pip install -r requirements.txt
 source /mnt/blockstorage/env/load.sh global   # if you have server access
 python scripts/route_query.py "which courses cover copywriting?"
