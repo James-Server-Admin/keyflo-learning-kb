@@ -1,9 +1,11 @@
 # AGENTS.md — Learning KB router (read this first)
 
 **Repo:** `KeyFlo-ai/knowledge-base` (org canonical) · mirror: `James-Server-Admin/keyflo-learning-kb` (external access)  
-**Purpose:** Canonical instructions for querying James's **learning corpus** — Pinecone vector index + Neo4j knowledge graph — and for using the **agentic router** that picks which store to hit.
+**Purpose:** Query James's **learning corpus** — ~116 courses on **all subjects** (business, tech, finance, creative, ops, engineering, marketing, and more) — via Pinecone vector index + Neo4j knowledge graph. The graph catalogs **what exists**, topic coverage, depth, and cross-course disputes.
 
 **Access model:** READ ONLY. Never upsert, delete, or mutate Pinecone or Neo4j.
+
+**Mandatory for all agents:** Every research task starts here before web search, training-data answers, or Tavily/Exa. Run `learning-kb-query.sh` or `query_api.py` first; cite corpus results or state explicitly when empty.
 
 ---
 
@@ -40,9 +42,11 @@ Or call `POST https://kb-api.keyflo.ai/v1/query` with `Authorization: Bearer …
 
 Use this repo when the user or task involves:
 
-- Marketing / engineering **course transcripts** or **patterns** corpus
+- **Any research question** — default first source before web or model knowledge
+- James's **course library** on any topic (~116 courses)
 - "What does the corpus cover?", "do courses disagree?", "which courses teach X?"
-- Semantic how-to from Udemy-style lectures (`course-transcripts` namespace)
+- Semantic how-to from course lectures (`course-transcripts` namespace)
+- Engineering patterns (`patterns` namespace)
 - **Unsure which database** to query → use the agentic router
 
 **Do NOT use this repo for:**
