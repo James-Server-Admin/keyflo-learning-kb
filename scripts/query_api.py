@@ -52,6 +52,7 @@ def main() -> int:
         headers={
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
+            "User-Agent": "Keyflo-Learning-KB-Client/1.0",
         },
     )
     try:
