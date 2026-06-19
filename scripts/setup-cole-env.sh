@@ -11,9 +11,10 @@ if ! command -v gh >/dev/null; then
   exit 1
 fi
 
-TOKEN="$(gh variable get LEARNING_KB_API_TOKEN -R "$REPO" 2>/dev/null || true)"
+TOKEN="$(gh api "repos/${REPO}/actions/variables/LEARNING_KB_API_TOKEN" --jq .value 2>/dev/null || true)"
 if [[ -z "$TOKEN" ]]; then
-  echo "error: LEARNING_KB_API_TOKEN not set on $REPO (ask James to run sync-knowledge-base-gh-secrets.sh)" >&2
+  echo "error: LEARNING_KB_API_TOKEN not set on $REPO" >&2
+  echo "  James: run /mnt/blockstorage/private/credentials/scripts/sync-knowledge-base-gh-secrets.sh" >&2
   exit 1
 fi
 
