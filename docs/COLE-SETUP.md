@@ -3,9 +3,7 @@
 **Repo:** `KeyFlo-ai/knowledge-base` (you are here)  
 **Purpose:** Query James's personal learning corpus (~116 marketing/engineering courses) via Pinecone + Neo4j, with an agentic router that picks the right store.
 
-Everything Cole needs to **use** the corpus is in this repo. Secrets are **not** in git — James sends a bearer token out of band.
-
-**Start here:** [`docs/COLE-SETUP.md`](docs/COLE-SETUP.md) — clone, token, query CLI, optional SSH/Actions paths.
+Everything Cole needs to **use** the corpus is in this repo. The bearer token is stored as a **GitHub repo variable** (`LEARNING_KB_API_TOKEN`) — run `./scripts/setup-cole-env.sh` after `gh auth login`.
 
 ---
 
@@ -15,12 +13,13 @@ Everything Cole needs to **use** the corpus is in this repo. Secrets are **not**
    ```bash
    git clone git@github.com:KeyFlo-ai/knowledge-base.git
    cd knowledge-base
+   gh auth login   # once, as your GitHub user with repo access
    ```
 
-2. **Get a bearer token from James** (Signal, 1Password, etc.). Store it locally:
+2. **Create local env from GitHub variable**
    ```bash
-   cp config/cole.env.example config/cole.env   # gitignored
-   # Edit config/cole.env — set LEARNING_KB_API_TOKEN only
+   chmod +x scripts/setup-cole-env.sh
+   ./scripts/setup-cole-env.sh
    source config/cole.env
    ```
 
@@ -33,10 +32,11 @@ Everything Cole needs to **use** the corpus is in this repo. Secrets are **not**
 4. **Run a query**
    ```bash
    python scripts/query_api.py "which courses cover copywriting?"
-   # or curl — see docs/public-api.md
    ```
 
 5. **Point your coding agent at** [`AGENTS.md`](../AGENTS.md) — routing rules, when to use vector vs graph, read-only boundaries.
+
+**Manual fallback:** copy `LEARNING_KB_API_TOKEN` from repo **Settings → Secrets and variables → Actions → Variables** into `config/cole.env`.
 
 ---
 
@@ -125,13 +125,15 @@ Secrets and variables are pre-synced by James — see table below.
 | `KEYFLO_SERVER_HOST` | Variable | `192.241.169.31` |
 | `KEYFLO_SERVER_SSH_USER` | Variable | `root` |
 | `LEARNING_KG_NEO4J_URI` | Variable | `bolt://localhost:7689` |
+| `LEARNING_KB_API_URL` | Variable | `https://kb-api.keyflo.ai` |
+| `LEARNING_KB_API_TOKEN` | Variable | Bearer token for `/v1/query` — use `./scripts/setup-cole-env.sh` |
 | `LANGCHAIN_COURSE_REPO` | Variable | `/root/langchain-course` |
 | `LEARNING_KB_COLE_RUNTIME` | Secret | Dotenv bundle for smoke-query workflow |
 | `LEARNING_PINECONE_API_KEY` | Secret | Pinecone index `learning` |
 | `LEARNING_KG_NEO4J_*` | Secrets | Neo4j auth |
 | `OPENAI_API_KEY` | Secret | Embeddings + router LLM |
 
-HTTP API bearer tokens are **not** in GitHub — James sends those directly.
+Rotate the API token in `learning-kb-api-keys.txt` on the server, then re-run `sync-knowledge-base-gh-secrets.sh`.
 
 ---
 

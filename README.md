@@ -30,9 +30,9 @@ Full handoff: **[`docs/COLE-SETUP.md`](docs/COLE-SETUP.md)** (clone, bearer toke
 
 ```bash
 git clone git@github.com:KeyFlo-ai/knowledge-base.git && cd knowledge-base
-cp config/cole.env.example config/cole.env   # add LEARNING_KB_API_TOKEN from James
+gh auth login
+./scripts/setup-cole-env.sh
 source config/cole.env
-curl -s https://kb-api.keyflo.ai/health
 python scripts/query_api.py "which courses cover copywriting?"
 ```
 

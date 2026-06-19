@@ -13,7 +13,7 @@
 |---|---|
 | 1 | Read [`docs/COLE-SETUP.md`](docs/COLE-SETUP.md) — full handoff |
 | 2 | Clone `KeyFlo-ai/knowledge-base` |
-| 3 | Get bearer token from James → `config/cole.env` → `python scripts/query_api.py "question"` |
+| 3 | Run `./scripts/setup-cole-env.sh` → `source config/cole.env` → `python scripts/query_api.py "question"` |
 | 4 | Share **this file** (`AGENTS.md`) with your coding agent |
 | 5 | *(Optional)* SSH to server for direct CLIs — Neo4j is `localhost:7689` only |
 | 6 | *(Optional)* GitHub Actions **smoke-query** when self-hosted runner exists |
