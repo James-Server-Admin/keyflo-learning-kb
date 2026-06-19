@@ -1,0 +1,72 @@
+# Cole smoke test — run learning KB queries on the Keyflo server.
+#
+# PREREQUISITE: self-hosted runner labeled `keyflo-server` on this repo (same machine
+# as Neo4j bolt://localhost:7689). Until registered, run manually on the server — see
+# AGENTS.md § GitHub runtime.
+#
+# Secrets: LEARNING_KB_COLE_RUNTIME (dotenv bundle) or individual LEARNING_* / OPENAI_* keys.
+
+name: smoke-query
+
+on:
+  workflow_dispatch:
+    inputs:
+      question:
+        description: Natural language question for the agentic router
+        default: "which courses cover copywriting?"
+        type: string
+      tool:
+        description: Which CLI to run
+        default: route
+        type: choice
+        options:
+          - route
+          - graph
+          - vector
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: [self-hosted, keyflo-server]
+    env:
+      PY: python3
+      LC_PY: /root/.venv-langchain-course/bin/python
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load runtime env
+        env:
+          RUNTIME_BUNDLE: ${{ secrets.LEARNING_KB_COLE_RUNTIME }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${RUNTIME_BUNDLE}" ]]; then
+            printf '%s\n' "$RUNTIME_BUNDLE" > /tmp/learning-kb.env
+            set -a
+            # shellcheck disable=SC1091
+            source /tmp/learning-kb.env
+            set +a
+            rm -f /tmp/learning-kb.env
+          elif [[ -f /mnt/blockstorage/env/global.env ]]; then
+            set -a
+            # shellcheck disable=SC1091
+            source /mnt/blockstorage/env/load.sh global
+            set +a
+          else
+            echo "error: no LEARNING_KB_COLE_RUNTIME secret and no server load.sh" >&2
+            exit 1
+          fi
+          export LANGCHAIN_COURSE_REPO="${LANGCHAIN_COURSE_REPO:-/root/langchain-course}"
+
+      - name: Install CLI deps
+        run: pip install -q -r requirements.txt
+
+      - name: Run query
+        run: |
+          Q="${{ inputs.question }}"
+          case "${{ inputs.tool }}" in
+            route)  python scripts/route_query.py "$Q" ;;
+            graph)  python scripts/query_graph.py --topics "$Q" ;;
+            vector) "$LC_PY" scripts/query_db.py --namespace course-transcripts "$Q" ;;
+          esac

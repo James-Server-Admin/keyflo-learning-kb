@@ -143,7 +143,36 @@ Use **this repo's router** for ad-hoc Q&A; use **kg_ground** for gated pipeline 
 
 ---
 
-## Agent checklist
+## GitHub runtime (Cole)
+
+Credentials and setup live in **this repo’s GitHub Settings → Secrets and variables → Actions**:
+
+| Name | Type | Purpose |
+|---|---|---|
+| `COLE_SETUP` | **Variable** (readable in Settings) | Full checklist: SSH, Neo4j, router path, smoke commands |
+| `KEYFLO_SERVER_HOST` | Variable | `192.241.169.31` |
+| `KEYFLO_SERVER_SSH_USER` | Variable | `root` |
+| `LEARNING_KG_NEO4J_URI` | Variable | `bolt://localhost:7689` |
+| `LANGCHAIN_COURSE_REPO` | Variable | `/root/langchain-course` |
+| `LEARNING_KB_COLE_RUNTIME` | **Secret** | All-in-one dotenv for Actions (Pinecone + Neo4j + OpenAI + paths) |
+| `LEARNING_PINECONE_API_KEY` | Secret | Pinecone index `learning` (also inside bundle) |
+| `LEARNING_KG_NEO4J_*` | Secrets | Neo4j auth (also inside bundle) |
+| `OPENAI_API_KEY` | Secret | Embeddings + router LLM |
+| `LANGCHAIN_COURSE_REPO` | Secret | Router checkout path for `route_query.py` |
+
+**Run a query from GitHub:** Actions → **smoke-query** → Run workflow → pick `route` | `graph` | `vector`.
+
+Requires a **self-hosted runner** labeled `keyflo-server` on this repo (same machine as Neo4j). Until James registers it, run on the server over SSH:
+
+```bash
+ssh root@192.241.169.31
+git clone https://github.com/James-Server-Admin/keyflo-learning-kb.git && cd keyflo-learning-kb
+pip install -r requirements.txt
+source /mnt/blockstorage/env/load.sh global   # if you have server access
+python scripts/route_query.py "which courses cover copywriting?"
+```
+
+---
 
 Before querying:
 

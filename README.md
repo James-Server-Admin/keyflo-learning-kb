@@ -29,6 +29,8 @@
 
 Ask James for read-only `LEARNING_PINECONE_API_KEY`, `LEARNING_KG_NEO4J_*`, and `OPENAI_API_KEY` if you are not using the server env loader.
 
+**GitHub:** Repo Settings → Actions → **Variables** (`COLE_SETUP`, server host, paths) and **Secrets** (`LEARNING_KB_COLE_RUNTIME` bundle + individual keys). Run **smoke-query** workflow when the self-hosted runner is registered.
+
 ## What's in this repo
 
 The learning corpus (~116 courses, marketing + engineering patterns) lives in **two read-only stores** on the Keyflo server:
