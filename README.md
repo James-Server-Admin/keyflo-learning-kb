@@ -39,7 +39,7 @@ Both repos stay in sync. Operator refresh:
    ssh root@192.241.169.31
    git clone git@github.com:KeyFlo-ai/knowledge-base.git && cd knowledge-base
    pip install -r requirements.txt
-   source /mnt/blockstorage/env/load.sh global   # or read-only keys from James
+   source /mnt/blockstorage/env/load.sh   # or read-only keys from James
    python scripts/route_query.py "which courses cover copywriting?"
    ```
 5. **Router runtime** also needs [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) at `/root/langchain-course` on the server.
@@ -77,6 +77,24 @@ python scripts/query_graph.py --disputes
 | [`docs/pinecone.md`](docs/pinecone.md) | Pinecone access |
 | [`docs/neo4j.md`](docs/neo4j.md) | Neo4j access |
 | [`docs/agentic-router.md`](docs/agentic-router.md) | Router agent |
+| [`docs/public-api.md`](docs/public-api.md) | **HTTP API** (Cole without SSH) |
+
+## Public HTTP API (no SSH)
+
+Bearer-authenticated read-only gateway on the Keyflo server:
+
+```bash
+# Server operator
+./scripts/run-api.sh   # 127.0.0.1:8791
+
+# Cole (after James sends a token)
+curl -s https://kb-api.keyflo.ai/v1/query \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"question":"which courses cover copywriting?"}'
+```
+
+See [`docs/public-api.md`](docs/public-api.md) for systemd, nginx, and Cloudflare setup.
 
 ## Related repos
 

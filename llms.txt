@@ -13,6 +13,13 @@
 - [docs/routing.md](docs/routing.md): vector vs graph vs both — decision table and examples
 - [router/agentic_router.py](router/agentic_router.py): Agentic router source (`route_query()`)
 - [docs/agentic-router.md](docs/agentic-router.md): How to run the router on the Keyflo server
+- [docs/public-api.md](docs/public-api.md): **HTTP API** — bearer auth, Cole without SSH
+
+## HTTP API
+
+- [docs/public-api.md](docs/public-api.md): `POST /v1/query`, bearer tokens, systemd/nginx/Cloudflare
+- `api/app.py`: FastAPI gateway wrapping `route_query()`
+- `scripts/run-api.sh`: local operator launcher (127.0.0.1:8791)
 
 ## Store access
 

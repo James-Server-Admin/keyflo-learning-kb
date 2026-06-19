@@ -1,0 +1,20 @@
+[Unit]
+Description=Keyflo Learning KB read-only query API
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/mnt/blockstorage/business/Keyflo_AI/08_Development/knowledge-base
+EnvironmentFile=/mnt/blockstorage/env/global.env
+Environment=LANGCHAIN_COURSE_REPO=/root/langchain-course
+Environment=LEARNING_KB_API_HOST=127.0.0.1
+Environment=LEARNING_KB_API_PORT=8791
+Environment=LEARNING_KB_API_KEYS_PATH=/mnt/blockstorage/private/credentials/learning-kb-api-keys.txt
+ExecStart=/mnt/blockstorage/business/Keyflo_AI/08_Development/knowledge-base/scripts/run-api.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

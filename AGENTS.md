@@ -15,8 +15,9 @@
 | 2 | Share **this file** (`AGENTS.md`) with your coding agent as the primary instruction set |
 | 3 | Run CLIs **on the Keyflo server** (Neo4j bolt is `localhost:7689`, not internet-exposed) |
 | 4 | `pip install -r requirements.txt` |
-| 5 | Env: `source /mnt/blockstorage/env/load.sh global` **or** export read-only keys from James (`LEARNING_PINECONE_API_KEY`, `LEARNING_KG_NEO4J_*`, `OPENAI_API_KEY`) |
+| 5 | Env: `source /mnt/blockstorage/env/load.sh` **or** export read-only keys from James (`LEARNING_PINECONE_API_KEY`, `LEARNING_KG_NEO4J_*`, `OPENAI_API_KEY`) |
 | 6 | Router: requires `okrealai/langchain-course` at `/root/langchain-course` (set `LANGCHAIN_COURSE_REPO` if elsewhere) |
+| 7 | **No SSH:** use HTTP API — James sends bearer token → `POST https://kb-api.keyflo.ai/v1/query` ([`docs/public-api.md`](docs/public-api.md)) |
 
 Scripts auto-load `/mnt/blockstorage/env/global.env` when present. Pinecone CLIs **require** `LEARNING_PINECONE_API_KEY` (not the legacy global `PINECONE_API_KEY`).
 
@@ -138,7 +139,8 @@ Use **this repo's router** for ad-hoc Q&A; use **kg_ground** for gated pipeline 
 | Neo4j bolt | `bolt://localhost:7689` (`learning-kg-neo4j`) |
 | Graph scale | ~116 courses · ~18k lectures · ~462 topics |
 | Router runtime deps | `/root/langchain-course` (or `LANGCHAIN_COURSE_REPO`) |
-| Env loader (server) | `source /mnt/blockstorage/env/load.sh global` |
+| Env loader (server) | `source /mnt/blockstorage/env/load.sh` |
+| Public HTTP API | `https://kb-api.keyflo.ai/v1/query` (Bearer token from James) · [`docs/public-api.md`](docs/public-api.md) |
 | Upstream implementation | [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) |
 
 ---
@@ -168,7 +170,7 @@ Requires a **self-hosted runner** labeled `keyflo-server` on this repo (same mac
 ssh root@192.241.169.31
 git clone git@github.com:KeyFlo-ai/knowledge-base.git && cd knowledge-base
 pip install -r requirements.txt
-source /mnt/blockstorage/env/load.sh global   # if you have server access
+source /mnt/blockstorage/env/load.sh   # if you have server access
 python scripts/route_query.py "which courses cover copywriting?"
 ```
 
