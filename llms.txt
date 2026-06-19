@@ -1,0 +1,30 @@
+# Keyflo Learning KB — agent discovery index
+
+> Canonical repo for querying the learning corpus (Pinecone + Neo4j) and the agentic router that picks which store to use.
+
+## Start here
+
+- [AGENTS.md](AGENTS.md): **Primary instructions for LLMs** — routing decision table, tools, env vars, when NOT to use this repo
+- [README.md](README.md): Human-oriented overview for Cole and collaborators
+
+## Routing (which database when)
+
+- [docs/routing.md](docs/routing.md): vector vs graph vs both — decision table and examples
+- [router/agentic_router.py](router/agentic_router.py): Agentic router source (`route_query()`)
+- [docs/agentic-router.md](docs/agentic-router.md): How to run the router on the Keyflo server
+
+## Store access
+
+- [docs/pinecone.md](docs/pinecone.md): Pinecone index `learning` — namespaces, keys, `scripts/query_db.py`
+- [docs/neo4j.md](docs/neo4j.md): Neo4j `learning-kg-neo4j` — bolt 7689, `scripts/query_graph.py`
+
+## Scripts (read-only CLIs)
+
+- `scripts/query_db.py`: Pinecone semantic search
+- `scripts/query_graph.py`: Neo4j coverage / disputes / lane topics
+- `scripts/route_query.py`: Agentic router launcher (server-only)
+
+## Related (outside this repo)
+
+- [okrealai/langchain-course](https://github.com/okrealai/langchain-course): Full router runtime + ingest + graph build
+- [KeyFlo-ai/keyflo-marketing](https://github.com/KeyFlo-ai/keyflo-marketing): `kg_ground()` pipeline GraphRAG for ad copy/creative lanes
