@@ -17,6 +17,11 @@ See also: [`routing.md`](routing.md) · [`../AGENTS.md`](../AGENTS.md)
 
 **Do not query:** `own-notes`, `orchestrations` — internal operator records.
 
+**Operator/local targeted namespaces:** `pinecone-platform` for Pinecone
+templates/runbooks and `platform-fabric` for fabric governance. These are
+available through the local CLI when server credentials are loaded; they are not
+guaranteed for every remote collaborator.
+
 ---
 
 ## Access keys (operator-issued — never in this repo)
