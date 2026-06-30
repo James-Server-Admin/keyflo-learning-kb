@@ -1,7 +1,7 @@
 # Cole setup — learning knowledge base
 
 **Repo:** `KeyFlo-ai/knowledge-base` (you are here)  
-**Purpose:** Query James's personal learning corpus (~116 marketing/engineering courses) via Pinecone + Neo4j, with an agentic router that picks the right store.
+**Purpose:** Query James's learning corpus (~116 courses across business, tech, finance, creative, ops, engineering, marketing, plus patterns and research papers where available) via Pinecone + Neo4j.
 
 ---
 
@@ -23,7 +23,7 @@ gh auth login
 # paste config/mcp.json → Cursor Settings → MCP
 ```
 
-Tools: `route_query`, `query_namespace`, `graph_query`, `list_namespaces`, `health`.
+Tools: `query_all`, `route_query`, `query_namespace`, `graph_query`, `list_namespaces`, `health`. Use `query_all` for broad research; use `route_query` when graph-vs-vector routing matters.
 
 ---
 

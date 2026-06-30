@@ -5,7 +5,7 @@
 
 **Access model:** READ ONLY. Never upsert, delete, or mutate Pinecone or Neo4j.
 
-**Mandatory for all agents:** Every research task starts here before web search, training-data answers, or Tavily/Exa. Run `learning-kb-query.sh` or `query_api.py` first; cite corpus results or state explicitly when empty.
+**Mandatory for all agents:** Every research task starts here before web search, training-data answers, or Tavily/Exa. Use MCP `query_all` or `python scripts/query_api.py "question"` first for broad research; use MCP `route_query` when graph-vs-vector routing is uncertain. Cite corpus results, or state which surface returned no usable sources. Do not claim "not covered" from one empty vector/router result.
 
 ---
 
@@ -71,7 +71,8 @@ One corpus, **two stores**. Pick based on question shape:
 | "Which courses cover X?" | **graph** | `scripts/query_graph.py --topics "X"` (searches topic + narrow + discipline + lecture title) |
 | Coverage / gaps / topic depth | **graph** | `scripts/query_graph.py --lane copy\|design\|campaign\|tracking` |
 | "Do courses **disagree** about X?" | **graph** | `scripts/query_graph.py --disputes` or `scripts/route_query.py` |
-| Broad synthesis (passages + structure) | **both** | `scripts/route_query.py "question"` |
+| Broad research / "what do we know?" | **full corpus** | MCP `query_all` or `python scripts/query_api.py "question"` |
+| Structural synthesis (passages + graph) | **both** | `scripts/route_query.py "question"` |
 | **Not sure** | **auto** | `scripts/route_query.py "question"` |
 
 ### Why this split matters
@@ -119,7 +120,7 @@ Docs: [`docs/agentic-router.md`](docs/agentic-router.md)
 
 - Index: `learning` · embedding: `text-embedding-3-large` (3072-dim, immutable)
 - Env: `LEARNING_PINECONE_API_KEY`, `OPENAI_API_KEY` (read-only keys from operator; mapped automatically)
-- Allowed namespaces: `patterns`, `course-transcripts`, `langchain-docs`
+- Allowed namespaces: `patterns`, `course-transcripts`, `langchain-docs`, `research-papers`
 - **Never query:** `own-notes`, `orchestrations`
 
 ### Neo4j (`scripts/query_graph.py`)
@@ -152,7 +153,7 @@ Use **this repo's router** for ad-hoc Q&A; use **kg_ground** for gated pipeline 
 | Resource | Value |
 |---|---|
 | Pinecone index | `learning` |
-| Pinecone namespaces (in-scope) | `course-transcripts`, `patterns`, `langchain-docs` |
+| Pinecone namespaces (in-scope) | `course-transcripts`, `patterns`, `langchain-docs`, `research-papers` |
 | Neo4j bolt | `bolt://localhost:7689` (`learning-kg-neo4j`) |
 | Graph scale | ~116 courses · ~18k lectures · ~462 topics |
 | Router runtime deps | `/root/langchain-course` (or `LANGCHAIN_COURSE_REPO`) |

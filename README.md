@@ -40,14 +40,14 @@ Give your coding agent [`AGENTS.md`](AGENTS.md). HTTP API reference: [`docs/publ
 
 ## What's in this repo
 
-The learning corpus (~116 courses, marketing + engineering patterns) lives in **two read-only stores** on the Keyflo server:
+James's learning corpus (~116 courses across business, tech, finance, creative, ops, engineering, marketing, plus patterns and research papers where available) lives in **two read-only stores** on the server:
 
 | Store | Technology | Best for |
 |---|---|---|
 | **Vector** | Pinecone index `learning` | Semantic search, how-to passages |
 | **Graph** | Neo4j `learning-kg-neo4j` | Coverage, topic depth, cross-course disputes |
 
-**Agentic router** — when you're not sure which to use, the HTTP API or `scripts/route_query.py` classifies the question and retrieves from the right store(s). Source: [`router/agentic_router.py`](router/agentic_router.py).
+**Default broad query** — the HTTP API runs full-corpus retrieval by default. Use `scripts/route_query.py` when graph-vs-vector routing or structural synthesis matters. Source: [`router/agentic_router.py`](router/agentic_router.py).
 
 ## Quick start (server SSH — optional)
 

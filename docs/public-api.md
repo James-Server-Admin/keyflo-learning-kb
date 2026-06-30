@@ -1,13 +1,13 @@
 # Public HTTP query API
 
-Read-only gateway to the learning corpus agentic router. Runs on the Keyflo server; expose via Cloudflare + nginx (TLS at the edge).
+Read-only gateway to James's learning corpus. By default it runs full-corpus `query_all`; set `all_namespaces=false` to use the graph/vector agentic router. Runs on the server; expose via Cloudflare + nginx (TLS at the edge).
 
 ## Endpoints
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `GET` | `/health` | none | Liveness check |
-| `POST` | `/v1/query` | Bearer token | Route + answer from Pinecone/Neo4j |
+| `POST` | `/v1/query` | Bearer token | Default full-corpus answer from Pinecone; optional router answer from Pinecone/Neo4j |
 
 ### `POST /v1/query`
 
@@ -15,11 +15,23 @@ Read-only gateway to the learning corpus agentic router. Runs on the Keyflo serv
 {
   "question": "which courses cover copywriting?",
   "k": 6,
-  "max_retries": 2
+  "max_retries": 2,
+  "all_namespaces": true
 }
 ```
 
-Response:
+Default response (`all_namespaces=true`):
+
+```json
+{
+  "answer": "...",
+  "namespaces": ["course-transcripts", "patterns", "research-papers"],
+  "per_namespace_counts": {"course-transcripts": 6, "patterns": 2},
+  "source_documents": ["..."]
+}
+```
+
+Router response (`all_namespaces=false`):
 
 ```json
 {
@@ -95,6 +107,27 @@ openssl rand -hex 32 >> /mnt/blockstorage/private/credentials/learning-kb-api-ke
 chmod 600 /mnt/blockstorage/private/credentials/learning-kb-api-keys.txt
 sudo systemctl restart learning-kb-api
 ```
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---------|----------------|-----|
+| `local HTTP 200`, public `403` or HTML error (not JSON) | Cloudflare **Full SSL** hits origin on **443** but nginx had no `kb-api.keyflo.ai` TLS vhost | Deploy `deploy/nginx-kb-api.conf` (port **443** + `[::]:443`, origin cert), `nginx -t && systemctl reload nginx` |
+| Public `401` + `missing or invalid Authorization` | No `Authorization: Bearer` header | Send bearer token on every `/v1/query` request |
+| Public `401` + `invalid api key` | Token not in `learning-kb-api-keys.txt` | Add token to keys file, `systemctl restart learning-kb-api`; sync Cole via `sync-knowledge-base-gh-secrets.sh` |
+| Public `403` / Cloudflare **Error 1010** (autonomous system) | WAF / bot rules blocking API clients | Cloudflare dashboard → **Security** → **WAF** → custom rule: if `http.host eq "kb-api.keyflo.ai"` and path starts with `/v1/` and `Authorization` header present → **Skip** remaining rules. Use a token with WAF edit permission if automating via API. |
+| `GET /health` **200**, `POST /v1/query` fails | Usually auth or nginx not forwarding `/v1/` | Confirm `proxy_set_header Authorization $http_authorization;` on `/v1/` locations |
+
+Quick checks (do not paste tokens in tickets):
+
+```bash
+curl -s -w "health %{http_code}\n" https://kb-api.keyflo.ai/health
+curl -s -o /dev/null -w "local %{http_code}\n" -H "Authorization: Bearer $LEARNING_KB_API_TOKEN" \
+  -H "Content-Type: application/json" -d '{"question":"test","k":2}' http://127.0.0.1:8791/v1/query
+curl -s -o /dev/null -w "public %{http_code}\n" -H "Authorization: Bearer $LEARNING_KB_API_TOKEN" \
+  -H "Content-Type: application/json" -d '{"question":"test","k":2}' https://kb-api.keyflo.ai/v1/query
+```
+
 
 ## Environment variables
 
