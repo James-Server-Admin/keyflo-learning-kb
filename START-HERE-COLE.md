@@ -6,7 +6,7 @@
 
 Tell your coding agent:
 
-> Read `AGENTS.md` in this folder. It explains how to query James's learning corpus (marketing/engineering courses). Credentials are already in `config/cole.env`. To run a query: `source config/cole.env && python3 scripts/query_api.py "your question"`. Read-only access only.
+> Read `AGENTS.md` in this folder. It explains how to query James's learning corpus across courses, patterns, and research papers. Credentials are already in `config/cole.env`. To run a broad query: `source config/cole.env && python3 scripts/query_api.py "your question"`. Read-only access only.
 
 **Primary instruction file:** [`AGENTS.md`](AGENTS.md)
 

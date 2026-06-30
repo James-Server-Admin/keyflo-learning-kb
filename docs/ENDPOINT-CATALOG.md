@@ -6,12 +6,13 @@ Quick reference:
 
 | Need | MCP tool | HTTP |
 |------|----------|------|
-| Default / unsure | `route_query` | `POST /v1/query` |
+| Broad research / "what do we know?" | `query_all` | `POST /v1/query` default |
+| Unsure graph vs vector | `route_query` | `POST /v1/query` with `all_namespaces=false` |
 | Passages (courses) | `query_namespace` → `course-transcripts` | — |
 | Passages (patterns) | `query_namespace` → `patterns` | — |
 | LangChain docs | `query_namespace` → `langchain-docs` | — |
 | Coverage / lanes | `graph_query` mode=`lane`\|`topics`\|`stats` | — |
-| Disputes | `graph_query` mode=`disputes` | `route_query` |
+| Disputes | `graph_query` mode=`disputes` | `route_query` / `POST /v1/query` with `all_namespaces=false` |
 | Inventory | `list_namespaces` | — |
 
 **MCP:** `https://kb-mcp.waytie.com/mcp` · setup: [`COLE-SETUP.md`](COLE-SETUP.md)  

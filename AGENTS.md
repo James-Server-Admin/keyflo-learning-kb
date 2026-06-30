@@ -1,11 +1,11 @@
 # AGENTS.md — Learning KB router (read this first)
 
-**Repo:** `KeyFlo-ai/knowledge-base` (org canonical) · mirror: `James-Server-Admin/keyflo-learning-kb` (external access)  
+**Repo:** legacy HTTP/API docs live here; canonical remote MCP repo is `James-Server-Admin/kb-gateway` and local runtime is `/root/langchain-course`.  
 **Purpose:** Query James's **learning corpus** — ~116 courses on **all subjects** (business, tech, finance, creative, ops, engineering, marketing, and more) — via Pinecone vector index + Neo4j knowledge graph. The graph catalogs **what exists**, topic coverage, depth, and cross-course disputes.
 
 **Access model:** READ ONLY. Never upsert, delete, or mutate Pinecone or Neo4j.
 
-**Mandatory for all agents:** Every research task starts here before web search, training-data answers, or Tavily/Exa. Run `learning-kb-query.sh` or `query_api.py` first; cite corpus results or state explicitly when empty.
+**Mandatory for all agents:** Every research task starts with the canonical gateway before web search, training-data answers, or Tavily/Exa. MCP-capable agents should call `answer_learning_kb` from `https://kb-mcp.waytie.com/mcp` first. If unavailable, use MCP `query_all` / `route_query` / `graph_query` or this repo's HTTP fallback (`python scripts/query_api.py "question"`). Never query Pinecone directly, never ask for Pinecone credentials, and never claim "not covered" from one empty vector/router result.
 
 ---
 
@@ -34,7 +34,7 @@ python scripts/query_api.py "which courses cover copywriting?"
 
 Or call `POST https://kb-api.keyflo.ai/v1/query` with `Authorization: Bearer …`. See [`docs/public-api.md`](docs/public-api.md).
 
-**Agents:** Prefer the HTTP API for corpus Q&A unless the task requires raw Cypher or Pinecone namespace control — then use SSH CLIs.
+**Agents:** Prefer MCP `answer_learning_kb` for corpus Q&A. Use this HTTP API when MCP is unavailable or a device/script needs a simple single-shot request. Use SSH CLIs only for operator debugging; do not expose raw Pinecone/Neo4j access to collaborators.
 
 ---
 
@@ -71,8 +71,12 @@ One corpus, **two stores**. Pick based on question shape:
 | "Which courses cover X?" | **graph** | `scripts/query_graph.py --topics "X"` (searches topic + narrow + discipline + lecture title) |
 | Coverage / gaps / topic depth | **graph** | `scripts/query_graph.py --lane copy\|design\|campaign\|tracking` |
 | "Do courses **disagree** about X?" | **graph** | `scripts/query_graph.py --disputes` or `scripts/route_query.py` |
-| Broad synthesis (passages + structure) | **both** | `scripts/route_query.py "question"` |
+| Broad research / "what do we know?" | **full corpus** | MCP `query_all` or `python scripts/query_api.py "question"` |
+| Pinecone DB best practices/templates or KB query method | **targeted vector** | local `pinecone-platform --hybrid` plus `patterns --hybrid` |
+| Structural synthesis (passages + graph) | **both** | `scripts/route_query.py "question"` |
 | **Not sure** | **auto** | `scripts/route_query.py "question"` |
+
+For future agents, the stable output contract is `answer_learning_kb`: answer, retrieval status, evidence sources, surfaces used, cautions, and next steps. This repo's `/v1/query` endpoint is the HTTP fallback, not the primary MCP contract.
 
 ### Why this split matters
 
@@ -119,7 +123,8 @@ Docs: [`docs/agentic-router.md`](docs/agentic-router.md)
 
 - Index: `learning` · embedding: `text-embedding-3-large` (3072-dim, immutable)
 - Env: `LEARNING_PINECONE_API_KEY`, `OPENAI_API_KEY` (read-only keys from operator; mapped automatically)
-- Allowed namespaces: `patterns`, `course-transcripts`, `langchain-docs`
+- Allowed namespaces: `patterns`, `course-transcripts`, `langchain-docs`, `research-papers`
+- Operator/local targeted namespaces include `pinecone-platform` for Pinecone templates/runbooks and `platform-fabric` for fabric governance; these may not be exposed to every remote collaborator.
 - **Never query:** `own-notes`, `orchestrations`
 
 ### Neo4j (`scripts/query_graph.py`)
@@ -152,14 +157,15 @@ Use **this repo's router** for ad-hoc Q&A; use **kg_ground** for gated pipeline 
 | Resource | Value |
 |---|---|
 | Pinecone index | `learning` |
-| Pinecone namespaces (in-scope) | `course-transcripts`, `patterns`, `langchain-docs` |
+| Pinecone namespaces (in-scope) | `course-transcripts`, `patterns`, `langchain-docs`, `research-papers` |
+| Pinecone targeted local namespaces | `pinecone-platform`, `platform-fabric` (operator/local; not guaranteed remote) |
 | Neo4j bolt | `bolt://localhost:7689` (`learning-kg-neo4j`) |
 | Graph scale | ~116 courses · ~18k lectures · ~462 topics |
 | Router runtime deps | `/root/langchain-course` (or `LANGCHAIN_COURSE_REPO`) |
 | Env loader (server) | `source /mnt/blockstorage/env/load.sh` |
 | Public HTTP API | `https://kb-api.keyflo.ai/v1/query` (Bearer token from James) · [`docs/public-api.md`](docs/public-api.md) |
-| **MCP (Cursor)** | `https://kb-mcp.waytie.com/mcp` · setup: [`KeyFlo-ai/kb-gateway`](https://github.com/KeyFlo-ai/kb-gateway) → `docs/COLE-SETUP.md` |
-| **Endpoint catalog** | [`KeyFlo-ai/kb-gateway` → `docs/ENDPOINT-CATALOG.md`](https://github.com/KeyFlo-ai/kb-gateway/blob/main/docs/ENDPOINT-CATALOG.md) — all tools, routing, live corpus stats |
+| **MCP (Cursor)** | `https://kb-mcp.waytie.com/mcp` · setup: [`James-Server-Admin/kb-gateway`](https://github.com/James-Server-Admin/kb-gateway) → `docs/COLE-SETUP.md` |
+| **Endpoint catalog** | [`James-Server-Admin/kb-gateway` → `docs/ENDPOINT-CATALOG.md`](https://github.com/James-Server-Admin/kb-gateway/blob/main/docs/ENDPOINT-CATALOG.md) — all tools, routing, live corpus stats |
 | Upstream implementation | [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) |
 
 ---

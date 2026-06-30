@@ -24,6 +24,15 @@ class QueryRequest(BaseModel):
     question: str = Field(..., min_length=3, max_length=4000)
     k: int = Field(default=6, ge=1, le=12)
     max_retries: int = Field(default=2, ge=0, le=3)
+    all_namespaces: bool = Field(
+        default=True,
+        description=(
+            "Default ON: search the WHOLE corpus — course-transcripts + patterns + "
+            "research-papers + langchain-docs — merged into one answer with "
+            "namespace-tagged sources. Set false to use the course-only agentic "
+            "graph<->vector router."
+        ),
+    )
 
 
 class QueryResponse(BaseModel):
@@ -32,6 +41,7 @@ class QueryResponse(BaseModel):
     route_reason: str | None = None
     graph_context: str | None = None
     source_documents: list[str] = Field(default_factory=list)
+    namespaces: list[str] = Field(default_factory=list)
     retries: int = 0
 
 
@@ -55,6 +65,15 @@ def _route_query(question: str, k: int, max_retries: int) -> dict[str, Any]:
     return route_query(question, k=capped_k, max_retries=max_retries)
 
 
+def _query_all(question: str, k: int) -> dict[str, Any]:
+    """Core full-corpus search: courses + patterns + papers + docs, merged."""
+    _ensure_router_env()
+    from runtime.query import query_all
+
+    capped_k = min(max(k, 8), MAX_K)  # widen default for cross-corpus spread
+    return query_all(question, k=capped_k)
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     keys = load_api_keys()
@@ -66,8 +85,8 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(
-    title="Keyflo Learning KB API",
-    description="Read-only query gateway to the learning corpus (Pinecone + Neo4j router).",
+    title="James Learning KB API",
+    description="Read-only query gateway to James's learning corpus (Pinecone + Neo4j router).",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -88,14 +107,22 @@ def query_corpus(
     if len(question) > MAX_QUESTION_LEN:
         raise HTTPException(status_code=400, detail="question too long")
     try:
-        result = _route_query(question, body.k, body.max_retries)
+        if body.all_namespaces:
+            result = _query_all(question, body.k)
+        else:
+            result = _route_query(question, body.k, body.max_retries)
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"router error: {type(exc).__name__}") from exc
+    counts = result.get("per_namespace_counts") or {}
     return QueryResponse(
         answer=result.get("answer") or "",
-        route=result.get("route"),
-        route_reason=result.get("route_reason"),
+        route=result.get("route") or ("all-namespaces" if body.all_namespaces else None),
+        route_reason=result.get("route_reason") or (
+            "searched: " + ", ".join(f"{n}({c})" for n, c in counts.items())
+            if body.all_namespaces else None
+        ),
         graph_context=result.get("graph_context"),
         source_documents=list(result.get("source_documents") or []),
+        namespaces=list(result.get("namespaces") or []),
         retries=int(result.get("retries") or 0),
     )

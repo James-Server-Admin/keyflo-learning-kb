@@ -11,13 +11,14 @@
 
 | Your question looks like… | Route | Tool |
 |---|---|---|
+| Broad research / "what do we know about X?" | **Full corpus** | MCP `query_all` or `python scripts/query_api.py "..."` |
 | "How do I X?" / "Explain X" / "Find content like X" | **Vector (Pinecone)** | `scripts/query_db.py --namespace course-transcripts` |
 | "What's the routine for Y?" / process patterns | **Vector (Pinecone)** | `scripts/query_db.py --namespace patterns` |
 | "Which courses cover topic X?" | **Graph (Neo4j)** | `scripts/query_graph.py --topics "X"` |
 | "What does the corpus cover / not cover?" | **Graph (Neo4j)** | `scripts/query_graph.py --lane <lane>` |
 | "Do any courses **disagree** about X?" | **Graph (Neo4j)** | `scripts/query_graph.py --disputes` or `scripts/route_query.py` |
 | "How do topics relate?" / multi-hop structure | **Graph (Neo4j)** | `scripts/route_query.py` (route=graph) |
-| Broad synthesis ("best approach to X considering the full corpus") | **Both** | `scripts/route_query.py "..."` |
+| Structural synthesis ("best approach to X considering graph + passages") | **Both** | `scripts/route_query.py "..."` |
 | Marketing copy / creative / campaign grounding (pipeline) | **Both (GraphRAG)** | `kg_ground(question, lane="copy")` |
 
 ---

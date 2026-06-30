@@ -20,7 +20,14 @@ from env_loader import ensure_learning_pinecone_key, load_global_env, require_ke
 
 INDEX = "learning"
 EMBED_MODEL = "text-embedding-3-large"  # index contract: 3072d, immutable
-ALLOWED_NAMESPACES = ["patterns", "course-transcripts", "langchain-docs"]
+ALLOWED_NAMESPACES = [
+    "patterns",
+    "course-transcripts",
+    "langchain-docs",
+    "research-papers",
+    "pinecone-platform",
+    "platform-fabric",
+]
 
 
 def main() -> int:

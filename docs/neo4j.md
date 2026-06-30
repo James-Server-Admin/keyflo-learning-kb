@@ -58,10 +58,20 @@ python scripts/query_graph.py --lane copy
 python scripts/query_graph.py --lane design
 python scripts/query_graph.py --lane campaign
 python scripts/query_graph.py --topics "headline persuasion email"
+python scripts/query_graph.py --topics "langsmith tracing"   # multi-surface: topic + narrow + discipline + lecture
 python scripts/query_graph.py --disputes
 ```
 
-Output: topic rows with domain, label, lecture count, course count — or dispute pairs with course names and claim text (trimmed).
+`--topics` searches **four surfaces** (fixes lexical label gap where Topic cluster labels miss product-specific terms like LangSmith):
+
+| Surface | What it matches |
+|---|---|
+| `topic` | Emergent Topic cluster labels |
+| `narrow` | External-ontology sub-skills (e.g. LLMOps / observability) |
+| `discipline` | Reference-frame disciplines |
+| `lecture` | Lecture titles (ranked by keyword specificity) |
+
+Output: grouped rows per surface — topic/narrow/discipline counts, or course + title for lectures.
 
 ---
 

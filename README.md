@@ -1,6 +1,9 @@
 # knowledge-base
 
-**Canonical Keyflo org repo** (`KeyFlo-ai/knowledge-base`) for querying the learning corpus and routing between Pinecone and Neo4j.
+HTTP/API companion repo (`KeyFlo-ai/knowledge-base`) for James's learning corpus.
+The canonical remote agent gateway is `James-Server-Admin/kb-gateway` with MCP
+tool `answer_learning_kb`; this repo remains the simple HTTP fallback and local
+CLI documentation.
 
 | Audience | Start here |
 |---|---|
@@ -36,18 +39,24 @@ source config/cole.env
 python scripts/query_api.py "which courses cover copywriting?"
 ```
 
-Give your coding agent [`AGENTS.md`](AGENTS.md). HTTP API reference: [`docs/public-api.md`](docs/public-api.md).
+Give your coding agent [`AGENTS.md`](AGENTS.md). MCP-capable agents should use
+`answer_learning_kb` from `https://kb-mcp.waytie.com/mcp`; use this HTTP API
+when MCP is unavailable. HTTP API reference: [`docs/public-api.md`](docs/public-api.md).
 
 ## What's in this repo
 
-The learning corpus (~116 courses, marketing + engineering patterns) lives in **two read-only stores** on the Keyflo server:
+James's learning corpus (~116 courses across business, tech, finance, creative, ops, engineering, marketing, plus patterns and research papers where available) lives in **two read-only stores** on the server:
 
 | Store | Technology | Best for |
 |---|---|---|
 | **Vector** | Pinecone index `learning` | Semantic search, how-to passages |
 | **Graph** | Neo4j `learning-kg-neo4j` | Coverage, topic depth, cross-course disputes |
 
-**Agentic router** — when you're not sure which to use, the HTTP API or `scripts/route_query.py` classifies the question and retrieves from the right store(s). Source: [`router/agentic_router.py`](router/agentic_router.py).
+**Default broad query** — the HTTP API runs full-corpus retrieval by default. For
+agents, prefer the gateway `answer_learning_kb` contract because it returns
+retrieval status, evidence sources, cautions, and next steps. Use
+`scripts/route_query.py` when graph-vs-vector routing or structural synthesis
+matters. Source: [`router/agentic_router.py`](router/agentic_router.py).
 
 ## Quick start (server SSH — optional)
 

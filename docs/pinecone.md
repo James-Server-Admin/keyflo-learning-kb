@@ -13,8 +13,14 @@ See also: [`routing.md`](routing.md) · [`../AGENTS.md`](../AGENTS.md)
 | `patterns` | Proven process/engineering patterns | "How should I structure a PR review?" |
 | `course-transcripts` | Udemy-style lectures: marketing, PM, git | "Facebook ads campaign structure" |
 | `langchain-docs` | LangChain / LangGraph / LangSmith docs | "How do I use LangGraph state?" |
+| `research-papers` | External papers / whitepapers | "What research papers cover RAG eval?" |
 
 **Do not query:** `own-notes`, `orchestrations` — internal operator records.
+
+**Operator/local targeted namespaces:** `pinecone-platform` for Pinecone
+templates/runbooks and `platform-fabric` for fabric governance. These are
+available through the local CLI when server credentials are loaded; they are not
+guaranteed for every remote collaborator.
 
 ---
 
@@ -54,12 +60,14 @@ Output: top matches with similarity scores + source file citations.
 | "How do I X?" / semantic how-to | "Which courses cover X?" |
 | Find passages like a topic | Coverage gaps, topic depth counts |
 | Process patterns (`patterns` ns) | Cross-course **disputes** |
-| | Not sure → [`scripts/route_query.py`](../scripts/route_query.py) |
+| Broad research / "what do we know?" | Use MCP `query_all` or HTTP `/v1/query` default |
+| | Not sure graph vs vector → [`scripts/route_query.py`](../scripts/route_query.py) |
 
 ---
 
 ## Ground rules
 
 - Results are reference material — confirm operational changes with operator.
+- Absence/not-covered claims require a healthy full-corpus query plus graph/coverage checks; one namespace or one router result is not enough.
 - Never commit or share API keys.
 - Stale content → report to operator; corrections go through ingest pipeline.

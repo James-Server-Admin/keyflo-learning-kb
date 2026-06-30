@@ -1,6 +1,6 @@
-# Keyflo Learning KB — agent discovery index
+# James Learning KB — agent discovery index
 
-> Canonical repo for querying the learning corpus (Pinecone + Neo4j) and the agentic router that picks which store to use.
+> Canonical repo for querying James's learning corpus (Pinecone + Neo4j). Broad research defaults to full-corpus `query_all`; use the agentic router when graph-vs-vector routing matters.
 > **Repos:** `KeyFlo-ai/knowledge-base` (org) · `James-Server-Admin/keyflo-learning-kb` (external mirror)
 
 ## Start here
@@ -14,12 +14,12 @@
 - [docs/routing.md](docs/routing.md): vector vs graph vs both — decision table and examples
 - [router/agentic_router.py](router/agentic_router.py): Agentic router source (`route_query()`)
 - [docs/agentic-router.md](docs/agentic-router.md): How to run the router on the Keyflo server
-- [docs/public-api.md](docs/public-api.md): **HTTP API** — bearer auth, Cole without SSH
+- [docs/public-api.md](docs/public-api.md): **HTTP API** — bearer auth, default full-corpus query, Cole without SSH
 
 ## HTTP API (preferred for Cole)
 
 - Base URL: `https://kb-api.keyflo.ai`
-- [docs/public-api.md](docs/public-api.md): `POST /v1/query`, bearer tokens
+- [docs/public-api.md](docs/public-api.md): `POST /v1/query`, bearer tokens, `all_namespaces=true` by default
 - `scripts/query_api.py`: Local CLI — set `LEARNING_KB_API_TOKEN`, no SSH
 - `config/cole.env.example`: Local env template (copy to `config/cole.env`, gitignored)
 - `api/app.py`: FastAPI gateway (server-side)
