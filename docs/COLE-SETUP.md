@@ -178,7 +178,7 @@ Rotate the API token in `learning-kb-api-keys.txt` on the server, then re-run `s
 
 ## Corpus boundaries
 
-**In scope:** James's learning corpus (course transcripts, patterns, langchain-docs namespace).  
+**In scope:** James's learning corpus (course transcripts, patterns, langchain-docs, research-papers).  
 **Out of scope:** Keyflo product SoT, VETRIQ/Townmark KBs, general web research.
 
 **Access model:** READ ONLY — never write to Pinecone or Neo4j.

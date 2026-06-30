@@ -1,6 +1,6 @@
 # AGENTS.md — Learning KB router (read this first)
 
-**Repo:** `KeyFlo-ai/knowledge-base` (org canonical) · mirror: `James-Server-Admin/keyflo-learning-kb` (external access)  
+**Repo:** legacy HTTP/API docs live here; canonical remote MCP repo is `James-Server-Admin/kb-gateway` and local runtime is `/root/langchain-course`.  
 **Purpose:** Query James's **learning corpus** — ~116 courses on **all subjects** (business, tech, finance, creative, ops, engineering, marketing, and more) — via Pinecone vector index + Neo4j knowledge graph. The graph catalogs **what exists**, topic coverage, depth, and cross-course disputes.
 
 **Access model:** READ ONLY. Never upsert, delete, or mutate Pinecone or Neo4j.
@@ -72,6 +72,7 @@ One corpus, **two stores**. Pick based on question shape:
 | Coverage / gaps / topic depth | **graph** | `scripts/query_graph.py --lane copy\|design\|campaign\|tracking` |
 | "Do courses **disagree** about X?" | **graph** | `scripts/query_graph.py --disputes` or `scripts/route_query.py` |
 | Broad research / "what do we know?" | **full corpus** | MCP `query_all` or `python scripts/query_api.py "question"` |
+| Pinecone DB best practices/templates or KB query method | **targeted vector** | local `pinecone-platform --hybrid` plus `patterns --hybrid` |
 | Structural synthesis (passages + graph) | **both** | `scripts/route_query.py "question"` |
 | **Not sure** | **auto** | `scripts/route_query.py "question"` |
 
@@ -121,6 +122,7 @@ Docs: [`docs/agentic-router.md`](docs/agentic-router.md)
 - Index: `learning` · embedding: `text-embedding-3-large` (3072-dim, immutable)
 - Env: `LEARNING_PINECONE_API_KEY`, `OPENAI_API_KEY` (read-only keys from operator; mapped automatically)
 - Allowed namespaces: `patterns`, `course-transcripts`, `langchain-docs`, `research-papers`
+- Operator/local targeted namespaces include `pinecone-platform` for Pinecone templates/runbooks and `platform-fabric` for fabric governance; these may not be exposed to every remote collaborator.
 - **Never query:** `own-notes`, `orchestrations`
 
 ### Neo4j (`scripts/query_graph.py`)
@@ -154,13 +156,14 @@ Use **this repo's router** for ad-hoc Q&A; use **kg_ground** for gated pipeline 
 |---|---|
 | Pinecone index | `learning` |
 | Pinecone namespaces (in-scope) | `course-transcripts`, `patterns`, `langchain-docs`, `research-papers` |
+| Pinecone targeted local namespaces | `pinecone-platform`, `platform-fabric` (operator/local; not guaranteed remote) |
 | Neo4j bolt | `bolt://localhost:7689` (`learning-kg-neo4j`) |
 | Graph scale | ~116 courses · ~18k lectures · ~462 topics |
 | Router runtime deps | `/root/langchain-course` (or `LANGCHAIN_COURSE_REPO`) |
 | Env loader (server) | `source /mnt/blockstorage/env/load.sh` |
 | Public HTTP API | `https://kb-api.keyflo.ai/v1/query` (Bearer token from James) · [`docs/public-api.md`](docs/public-api.md) |
-| **MCP (Cursor)** | `https://kb-mcp.waytie.com/mcp` · setup: [`KeyFlo-ai/kb-gateway`](https://github.com/KeyFlo-ai/kb-gateway) → `docs/COLE-SETUP.md` |
-| **Endpoint catalog** | [`KeyFlo-ai/kb-gateway` → `docs/ENDPOINT-CATALOG.md`](https://github.com/KeyFlo-ai/kb-gateway/blob/main/docs/ENDPOINT-CATALOG.md) — all tools, routing, live corpus stats |
+| **MCP (Cursor)** | `https://kb-mcp.waytie.com/mcp` · setup: [`James-Server-Admin/kb-gateway`](https://github.com/James-Server-Admin/kb-gateway) → `docs/COLE-SETUP.md` |
+| **Endpoint catalog** | [`James-Server-Admin/kb-gateway` → `docs/ENDPOINT-CATALOG.md`](https://github.com/James-Server-Admin/kb-gateway/blob/main/docs/ENDPOINT-CATALOG.md) — all tools, routing, live corpus stats |
 | Upstream implementation | [`okrealai/langchain-course`](https://github.com/okrealai/langchain-course) |
 
 ---
