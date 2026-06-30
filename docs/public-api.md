@@ -1,6 +1,13 @@
 # Public HTTP query API
 
-Read-only gateway to James's learning corpus. By default it runs full-corpus `query_all`; set `all_namespaces=false` to use the graph/vector agentic router. Runs on the server; expose via Cloudflare + nginx (TLS at the edge).
+Read-only HTTP fallback for James's learning corpus. By default it runs
+full-corpus `query_all`; set `all_namespaces=false` to use the graph/vector
+agentic router. Runs on the server; expose via Cloudflare + nginx (TLS at the
+edge).
+
+For MCP-capable agents, prefer the canonical `kb-gateway` MCP tool
+`answer_learning_kb` at `https://kb-mcp.waytie.com/mcp`. Use this HTTP API for
+scripts, no-MCP agents, browser/mobile wrappers, or simple single-shot Q&A.
 
 ## Endpoints
 
@@ -8,6 +15,10 @@ Read-only gateway to James's learning corpus. By default it runs full-corpus `qu
 |--------|------|------|-------------|
 | `GET` | `/health` | none | Liveness check |
 | `POST` | `/v1/query` | Bearer token | Default full-corpus answer from Pinecone; optional router answer from Pinecone/Neo4j |
+
+This endpoint does not expose raw Pinecone or Neo4j credentials. Agents should
+cite returned `source_documents` and should not make absence claims from one
+empty or errored response.
 
 ### `POST /v1/query`
 

@@ -5,7 +5,7 @@
 
 **Access model:** READ ONLY. Never upsert, delete, or mutate Pinecone or Neo4j.
 
-**Mandatory for all agents:** Every research task starts here before web search, training-data answers, or Tavily/Exa. Use MCP `query_all` or `python scripts/query_api.py "question"` first for broad research; use MCP `route_query` when graph-vs-vector routing is uncertain. Cite corpus results, or state which surface returned no usable sources. Do not claim "not covered" from one empty vector/router result.
+**Mandatory for all agents:** Every research task starts with the canonical gateway before web search, training-data answers, or Tavily/Exa. MCP-capable agents should call `answer_learning_kb` from `https://kb-mcp.waytie.com/mcp` first. If unavailable, use MCP `query_all` / `route_query` / `graph_query` or this repo's HTTP fallback (`python scripts/query_api.py "question"`). Never query Pinecone directly, never ask for Pinecone credentials, and never claim "not covered" from one empty vector/router result.
 
 ---
 
@@ -34,7 +34,7 @@ python scripts/query_api.py "which courses cover copywriting?"
 
 Or call `POST https://kb-api.keyflo.ai/v1/query` with `Authorization: Bearer …`. See [`docs/public-api.md`](docs/public-api.md).
 
-**Agents:** Prefer the HTTP API for corpus Q&A unless the task requires raw Cypher or Pinecone namespace control — then use SSH CLIs.
+**Agents:** Prefer MCP `answer_learning_kb` for corpus Q&A. Use this HTTP API when MCP is unavailable or a device/script needs a simple single-shot request. Use SSH CLIs only for operator debugging; do not expose raw Pinecone/Neo4j access to collaborators.
 
 ---
 
@@ -75,6 +75,8 @@ One corpus, **two stores**. Pick based on question shape:
 | Pinecone DB best practices/templates or KB query method | **targeted vector** | local `pinecone-platform --hybrid` plus `patterns --hybrid` |
 | Structural synthesis (passages + graph) | **both** | `scripts/route_query.py "question"` |
 | **Not sure** | **auto** | `scripts/route_query.py "question"` |
+
+For future agents, the stable output contract is `answer_learning_kb`: answer, retrieval status, evidence sources, surfaces used, cautions, and next steps. This repo's `/v1/query` endpoint is the HTTP fallback, not the primary MCP contract.
 
 ### Why this split matters
 
